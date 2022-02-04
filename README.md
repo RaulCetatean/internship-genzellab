@@ -23,6 +23,8 @@ conda activate sleep_scoring
 2. Add Trodes to the path and download `trodesnetwork`. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html). In my case, I downloaded `Trodes` in the Desktop.
 ```bash
 export PATH=/home/lisa/Desktop/Trodes_2-2-3_Ubuntu1804/:$PATH
+
+export PATH=/home/usr/path/to/trodes/:$PATH
 ```
 I found this command to work better than the one found on the LorenFrankLab github page (https://github.com/LorenFrankLab/rec_to_binaries).
 Now, to install trodesnetwork:
