@@ -10,7 +10,7 @@ Fo now, the structure of the files is still the one from the LorenFrankLab, but 
 
 ## Installation
 
-1. Download and run the latest version of the Trodes toolbox (https://bitbucket.org/mkarlsso/trodes/downloads/). The version used in my case and in the examples is `Trodes_2-2-3_Ubuntu1804`. 
+1. Download and run the latest version of the Trodes toolbox (https://bitbucket.org/mkarlsso/trodes/downloads/). The version used is `Trodes 1-9-1`. Download `Trodes_1-9-1_Ubuntu1604.tar.gz` and uncompress it. Then go into the folder and check if the file named `Trodes` has the correct permissions to be executed. This version of `Trodes` is not the most recent one, but it works.
 2. Download and install miniconda (https://docs.conda.io/en/latest/miniconda.html) if conda is not installed.
 
 ## Procedure
@@ -22,9 +22,7 @@ conda activate sleep_scoring
 ```
 2. Add Trodes to the path and download `trodesnetwork`. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html). In my case, I downloaded `Trodes` in the Desktop.
 ```bash
-export PATH=/home/lisa/Desktop/Trodes_2-2-3_Ubuntu1804/:$PATH
-
-export PATH=/home/usr/path/to/trodes/:$PATH
+export PATH=/home/lisa/Desktop/Trodes_1-9-1_Ubuntu1604/:$PATH
 ```
 I found this command to work better than the one found on the LorenFrankLab github page (https://github.com/LorenFrankLab/rec_to_binaries).
 Now, to install trodesnetwork:
@@ -34,7 +32,7 @@ pip install trodesnetwork
 ```
 Since in the new enviroment no libraries were previously installed, also `pip` is needed, and it is installed with `conda install`.
 
-3. Install `rec_to_binaries` by using `conda install`. More information on `rec_to_binaries and how to run the package can be found on the github page (https://github.com/LorenFrankLab/rec_to_binaries).
+3. Install `rec_to_binaries` by using `conda install`. More information on `rec_to_binaries` and how to run the package can be found on the github page (https://github.com/LorenFrankLab/rec_to_binaries).
 ```bash
 conda install -c franklab rec_to_binaries
 ```
