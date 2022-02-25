@@ -30,6 +30,13 @@ conda install -c franklab rec_to_binaries
 ```
 Now everything that is needed should be installed.
 
+## On Windows
+
+The command for adding Trodes to the enviromental variables is different on Windows:
+```bash
+set PATH=%PATH%;C:\your\path\here\
+```
+
 ## Python script `conversion_genzellab.py` - Usage
 
 This python script can be run from the command line, and it does not require any arguments. As soon as the script runs, the program will open a GUI and will ask the user to choose 
