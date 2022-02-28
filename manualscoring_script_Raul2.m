@@ -82,5 +82,6 @@ inputData.motionSignal = movement_data;
 inputData.mChs = [1 2 3];
 toc
 %%
+cd(path)
 basename = path;
 TheStateEditor(basename, inputData);
