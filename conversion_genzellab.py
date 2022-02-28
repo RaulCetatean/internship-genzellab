@@ -1,64 +1,113 @@
 import os
-from tkinter import filedialog as fd
 import logging
 from rec_to_binaries import extract_trodes_rec_file
 import shutil 
 
+'''The script should be in /mnt/genzel/Rat/HM/Rat_HM_Ephys/'''
+
+usr_input = input("Please insert the number of the rat: ")
+script_dir = os.getcwd()
+folders = []
+rats = os.listdir()
+
+for rat_n in rats:
+    if f"Rat{usr_input}" in rat_n:
+        new_dir = f"{script_dir}/{rat_n}"
+
+            
+for root, dirs, files in os.walk(new_dir):
+    for name in files:
+        if '.rec' == name[len(name)-4:]:
+            rec = os.path.join(root, name)
+            folders.append(rec)
+
+
 # PRE-ANALYSIS PART
 
-usr_input = fd.askopenfilename()
-filename = usr_input.split('/')[-1]
-file_prefix = filename[:-3]
+def organization(rec_file):
 
-date = filename.split('_')[5]
-animal = filename.split('_')[0]
-last_part = '_01_r1.rec'
-data_dir = usr_input[:len(usr_input)-len(filename)]
-os.chdir(data_dir)
+    filename = rec_file.split('/')[-1]
+    print(filename.split('_'))
+    date = filename.split('_')[5]
+    animal = filename.split('_')[0]
+    last_part = '_01.rec'
+    data_dir = rec_file[:len(rec_file)-len(filename)]
+    os.chdir(data_dir)
 
-# Now I need to generate the folders and change the name of the rec file
-new_name = f"{date}_{animal}{last_part}"
-if os.path.isfile(usr_input):    
-    os.rename(os.path.join(data_dir, filename), os.path.join(data_dir, new_name))
+    # Now I need to generate the folders and change the name of the rec file
+    new_name = f"{date}_{animal}{last_part}"
+    if os.path.isfile(rec_file):
+        os.rename(os.path.join(data_dir, filename), os.path.join(data_dir, new_name))
     
-# Now I have to put the renamed files in a folder that resembles the structure of lorenfrank directories
+    # Now I have to put the renamed files in a folder that resembles the structure of lorenfrank directories
 
-dirs_needed = f"{data_dir}{animal}/raw/{date}"
-os.makedirs(dirs_needed)
+    dirs_needed = f"{data_dir}{animal}/raw/{date}"
+    os.makedirs(dirs_needed)
 
-# Move the .rec file in the directory and run rec_to_binaries to get the binary files
+    # Move the .rec file in the directory and run rec_to_binaries to get the binary files
 
-shutil.move(f"{data_dir}{new_name}", dirs_needed)
+    shutil.move(f"{data_dir}{new_name}", dirs_needed)
 
-# ANAYSIS
+    return filename, date, animal, data_dir
 
-logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
+# ANALYSIS
+
+
+def conversion(data_folder, animal):
+    logging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
-                    
-extract_trodes_rec_file(data_dir, animal, parallel_instances=4)
+
+    lfp_export_args = ('-highpass', '0',
+                                   '-lowpass', '400',
+                                   '-interp', '0',
+                                   '-userefs', '0',
+                                   '-outputrate', '1000')
+
+    extract_trodes_rec_file(data_folder, animal,
+                            extract_analog=True,
+                            extract_spikes=False,
+                            extract_lfps=True,
+                            extract_dio=False,
+                            extract_time=False,
+                            extract_mda=False,
+                            lfp_export_args=lfp_export_args)
+                            
 
 # POST-ANALYSIS
 
-generated_dir = f"{data_dir}{animal}/preprocessing/{date}"
+def cleanup(data_dir, animal, date, filename):
+    generated_dir = f"{data_dir}{animal}/preprocessing/{date}"
+    last_part = '_01.rec'
+    new_name = f"{date}_{animal}{last_part}"
+    file_prefix = filename[:-3]
+  
+    for root, dirs, files in os.walk(generated_dir):
+        for dir_name in dirs:
+            shutil.move(os.path.join(root,dir_name), data_dir)
+    
+    folders = next(os.walk(data_dir))[1]
+      
 
-for root, dirs, files in os.walk(generated_dir):
-    for name in files:
-        old_name = name.replace(new_name[:-3], file_prefix)
-        os.rename(os.path.join(root, name), os.path.join(root, old_name))
+            
+    for ppdir in folders:
+        for root, dirs, files in os.walk(os.path.join(data_dir, ppdir)):
+            for name in files:
+                old_name = name.replace(new_name[:-3], file_prefix)
+                os.rename(os.path.join(root, name), os.path.join(root, old_name))
+            
+    for x in folders:
+        if '.' in x:
+            os.rename(os.path.join(data_dir, x), os.path.join(data_dir, f"{filename[:-4]}{x[x.index('.'):]}"))
+            
+    # Rename original file as before
+    shutil.move(f"{data_dir}{animal}/raw/{date}/{filename}", data_dir)
 
-    # Change also names of the generated folders
-    for dir_name in dirs:
-        inv = dir_name.index('.')
-        preprocess_dir = dir_name.replace(new_name[:-3], file_prefix)
-        os.rename(os.path.join(root, dir_name), os.path.join(root, preprocess_dir))
+    shutil.rmtree(f"{data_dir}{animal}")
 
-# Rename original file as before
-shutil.move(f"{data_dir}{animal}/raw/{date}/{new_name}", data_dir)
 
-if os.path.isfile(f"{data_dir}{new_name}"):
-    os.rename(os.path.join(data_dir, new_name), os.path.join(data_dir, filename))
+# AUTOMATING IT FOR ALL REC FILES FOR A RAT
 
-# Move preprocessing folder and delete rat/raw/date...
-
-shutil.move(f"{generated_dir}", f"{data_dir}")
-shutil.rmtree(f"{data_dir}{animal}")
+for recording in folders:
+    filename, date, animal, data_dir = organization(recording)
+    conversion(data_dir, animal)
+    cleanup(data_dir, animal, date, filename)
