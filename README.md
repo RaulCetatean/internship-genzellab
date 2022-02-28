@@ -18,7 +18,7 @@ conda activate sleep_scoring
 ```bash
 conda install -c franklab rec_to_binaries
 ```
-6. Add Trodes to the path and download `trodesnetwork`. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html). In my case, I downloaded `Trodes` in the Desktop.
+6. Add Trodes to the path. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html).
 
 ### On Linux
 
@@ -28,8 +28,7 @@ export PATH=/path/to/Trodes/folder/:$PATH
 
 ### On Windows
 
-On Windows, you can add Trodes to the path in the following way: in the settings, look for `Edit environment variables for your account`. A new window should appear looking like the one below. 
-In the user variables, double-click on the Path variable and another window will pop up. From there, click on `Browse...` and add the path to Trodes.
+On Windows, you can add Trodes to the path in the following way: in the settings, look for `Edit environment variables for your account`. A new window should appear. In the user variables, double-click on the Path variable and another window will pop up. From there, click on `Browse...` and add the path to Trodes.
 
 Now everything that is needed should be installed.
 
@@ -80,16 +79,16 @@ In order to use the TrodesToMatlab toolbox, it is best to download the source co
 git clone https://bitbucket.org/mkarlsso/trodes.git
 ```
 Add to the Matlab path the following folders:
--trodes
--TrodesToMatlab
--TrodesToNeuroQuery
+- trodes
+- TrodesToMatlab
+- TrodesToNeuroQuery
 
 Now, a few more files are needed for the manual scoring. These files can be found here: https://github.com/AbdelRayan/sleep_scoring 
 ```bash
 git clone https://github.com/AbdelRayan/sleep_scoring.git
 ```
 For the program to run properly, these files need to be inside the same directory as the `.rec` file and the analog and LFP folders:
--TheStateEditor.m
--ExtractLFPBinaryFilesAbdel.m
--manualscoring_script_Raul.m
+- TheStateEditor.m
+- ExtractLFPBinaryFilesAbdel.m
+- manualscoring_script_Raul.m
 
