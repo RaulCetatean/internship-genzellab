@@ -61,7 +61,7 @@ lfp_export_args = ('-highpass', '0',
                             lfp_export_args=lfp_export_args)
 ```
 
-### 3. Running the script
+### 3. Running the Python script
 
 In order to run the script, you just have to call it from the folder the script and the animal folders are. In this case, the script in order to run needs to be in `/mnt/genzel/Rat/HM/Rat_HM_Ephys/`.
 
@@ -72,4 +72,24 @@ In order to time the program, just add `time` before running the program.
 ```bash
 time python conversion_genzellab.py
 ```
+## Manual scoring Matlab script
+
+Download the source code for Trodes.
+In order to use the TrodesToMatlab toolbox, it is best to download the source code from bitbucket.
+```bash
+git clone https://bitbucket.org/mkarlsso/trodes.git
+```
+Add to the Matlab path the following folders:
+-trodes
+-TrodesToMatlab
+-TrodesToNeuroQuery
+
+Now, a few more files are needed for the manual scoring. These files can be found here: https://github.com/AbdelRayan/sleep_scoring 
+```bash
+git clone https://github.com/AbdelRayan/sleep_scoring.git
+```
+For the program to run properly, these files need to be inside the same directory as the `.rec` file and the analog and LFP folders:
+-TheStateEditor.m
+-ExtractLFPBinaryFilesAbdel.m
+-manualscoring_script_Raul.m
 
