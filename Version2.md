@@ -13,51 +13,63 @@ Fo now, the structure of the files is still the one from the LorenFrankLab, but 
 conda create --name sleep_scoring
 conda activate sleep_scoring
 ```
-5. Add Trodes to the path and download `trodesnetwork`. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html). In my case, I downloaded `Trodes` in the Desktop.
-```bash
-export PATH=/home/lisa/Desktop/Trodes_1-9-1_Ubuntu1604/:$PATH
-```
-Now, to install trodesnetwork:
-```bash
-conda install pip
-pip install trodesnetwork
-```
-Since in the new enviroment no libraries were previously installed, also `pip` is needed, and it is installed with `conda install`.
 
-6. Install `rec_to_binaries` by using `conda install`. More information on `rec_to_binaries` and how to run the package can be found on the github page (https://github.com/LorenFrankLab/rec_to_binaries).
+5. Install `rec_to_binaries` by using `conda install`. More information on `rec_to_binaries` and how to run the package can be found on the github page (https://github.com/LorenFrankLab/rec_to_binaries).
 ```bash
 conda install -c franklab rec_to_binaries
 ```
-Now everything that is needed should be installed.
+6. Add Trodes to the path and download `trodesnetwork`. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html). In my case, I downloaded `Trodes` in the Desktop.
 
-## On Windows
+### On Linux
 
-The command for adding Trodes to the enviromental variables is different on Windows:
 ```bash
-set PATH=%PATH%;C:\your\path\here\
+export PATH=/path/to/Trodes/folder/:$PATH
 ```
+
+### On Windows
+
+On Windows, you can add Trodes to the path in the following way: in the settings, look for `Edit environment variables for your account`. A new window should appear looking like the one below. 
+In the user variables, double-click on the Path variable and another window will pop up. From there, click on `Browse...` and add the path to Trodes.
+
+Now everything that is needed should be installed.
 
 ## Python script `conversion_genzellab.py` - Usage
 
-This python script can be run from the command line, and it does not require any arguments. As soon as the script runs, the program will open a GUI and will ask the user to choose 
-the `.rec` file to be converted. After that,  the script will generate the name and the directories needed for `rec_to_binaries` to run and will convert the data from the `.rec` file into
-a new folder, called `preprocessing`. The script at last will change the name of the generated folders and files back to the previous one. For now, the program is able to ask for input of one
-`.rec` file, but it should be able to automate the whole process. 
+This python script can be run from the command line, and it does not require any arguments. As soon as the script runs, the program will ask the user to choose  the the number of the animal for which all the`.rec` file will be converted. After that,  the script will generate the name and the directories needed for `rec_to_binaries` to run and will convert the data from the `.rec` file into a new folder, called `preprocessing`. The script at last will change the name of the generated folders and files back to the previous one. The process is automated for all the `.rec` files corresponding to the specific animal chosen.
 
 ### 1. File selection
 
-The first part of the code asks for the .rec file to be converted and generates a new name for the file in order to be read by `rec_to_binaries`. It needs a particular name structure, as
-well as folder structure, so the first thing the script does after getting the input is generating the new name and the needed folders. 
+As soon as the python script runs, it will ask for an input. The input should be an integer number representing the animal. Then the program will start converting all the `.rec` files associated with the selected animal. 
 
+### 2. File conversion
 
+The script right now is only extracting the analog and LFP files, however there are different parameters that can be modified.
+```bash
+lfp_export_args = ('-highpass', '0',
+                                   '-lowpass', '400',
+                                   '-interp', '0',
+                                   '-userefs', '0',
+                                   '-outputrate', '1000')
 
-Now the script will start computing the various `.dat` files. The code is taken from the `rec_to_binaries` github page. For more information, please visit their github page (https://github.com/LorenFrankLab/rec_to_binaries)
-
-```python
-ogging.basicConfig(level='INFO', format='%(asctime)s %(message)s',
-                    datefmt='%d-%b-%y %H:%M:%S')
-                    
-extract_trodes_rec_file(data_dir, animal, parallel_instances=4)
+    extract_trodes_rec_file(data_folder, animal,
+                            extract_analog=True,
+                            extract_spikes=False,
+                            extract_lfps=True,
+                            extract_dio=False,
+                            extract_time=False,
+                            extract_mda=False,
+                            lfp_export_args=lfp_export_args)
 ```
-After the generation of the `.dat` files, the program will move the preprocessing folder and the original `.rec` file in the main folder, as well as changing the names of the files and removing unnecessary folders.
+
+### 3. Running the script
+
+In order to run the script, you just have to call it from the folder the script and the animal folders are. In this case, the script in order to run needs to be in `/mnt/genzel/Rat/HM/Rat_HM_Ephys/`.
+
+```bash
+python conversion_genzellab.py
+```
+In order to time the program, just add `time` before running the program.
+```bash
+time python conversion_genzellab.py
+```
 
