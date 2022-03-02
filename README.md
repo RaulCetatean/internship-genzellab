@@ -1,6 +1,4 @@
-Here are the steps needed in order to install and run Trodes and the rec_to_binaries python package from the LorenFrankLab. These steps were done using Ubuntu 20.04.2 LTS.  
-
-Fo now, the structure of the files is still the one from the LorenFrankLab, but it might change.
+Here are the steps needed in order to install and run Trodes and the rec_to_binaries python package from the LorenFrankLab. These steps were done using Ubuntu 20.04.2 LTS. More detailed information on the procedure done with the Windows operating system are also written below. 
 
 ## Installation Procedure
 
@@ -20,13 +18,13 @@ conda install -c franklab rec_to_binaries
 ```
 6. Add Trodes to the path. Trodes documentation can be found here (https://docs.spikegadgets.com/en/latest/index.html).
 
-### On Linux
+### Add Trodes to Path On Linux
 
 ```bash
 export PATH=/path/to/Trodes/folder/:$PATH
 ```
 
-### On Windows
+### Add Trodes to Path On Windows
 
 On Windows, you can add Trodes to the path in the following way: in the settings, look for `Edit environment variables for your account`. A new window should appear. In the user variables, double-click on the Path variable and another window will pop up. From there, click on `Browse...` and add the path to Trodes.
 
@@ -73,8 +71,8 @@ time python conversion_genzellab.py
 ```
 ## Manual scoring Matlab script
 
-Download the source code for Trodes.
-In order to use the TrodesToMatlab toolbox, it is best to download the source code from bitbucket.
+Follow the first two steps of the `Installation procedure` section.
+In order to use the TrodesToMatlab toolbox, it is best to download the source code from bitbucket. The source code contains a folder named `TrodesToMatlab`, which is needed by the script to run properly. 
 ```bash
 git clone https://bitbucket.org/mkarlsso/trodes.git
 ```
@@ -83,6 +81,10 @@ Add to the Matlab path the following folders:
 - TrodesToMatlab
 - TrodesToNeuroQuery
 
+The Matlab file from this repository can be downloaded by cloning the repository, or download directly the 'ZIP' folder.
+```bash
+git clone https://github.com/RaulCetatean/internship-genzellab.git
+```
 Now, a few more files are needed for the manual scoring. These files can be found here: https://github.com/AbdelRayan/sleep_scoring 
 ```bash
 git clone https://github.com/AbdelRayan/sleep_scoring.git
@@ -92,3 +94,4 @@ For the program to run properly, these files need to be inside the same director
 - ExtractLFPBinaryFilesAbdel.m
 - manualscoring_script_Raul.m
 
+`manualscoring_script_Raul.m` starts by asking the `rec` file to be analyzed. Then it will look for LFP and analog folders in the directory of the file; if these folders are found, the script will ask for the tetrode and channel numbers directly. If the folders are not present, it will start computing the movement data and the LFP files, and then it will ask for the tetrode and channel numbers. 
