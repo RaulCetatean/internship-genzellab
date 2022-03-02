@@ -12,15 +12,15 @@ if exist(AnalogFolder, 'dir')
     cd(AnalogFolder)
     
     
-    accel_x = readTrodesExtractedDataFile([FileName, '.analog_Headstage_AccelX.dat']);
+    accel_x = readTrodesExtractedDataFile([FileName, '.analog_AccelX.dat']);
     OriginalFs = accel_x.clockrate;
     NdownSamp = OriginalFs / TargetFs;
     ag_x = accel_x.fields.data;
     g_x = decimate(double(ag_x),NdownSamp,'FIR');
-    accel_y = readTrodesExtractedDataFile([FileName, '.analog_Headstage_AccelY.dat']);
+    accel_y = readTrodesExtractedDataFile([FileName, '.analog_AccelY.dat']);
     ag_y = accel_y.fields.data;
     g_y = decimate(double(ag_y),NdownSamp,'FIR');
-    accel_z = readTrodesExtractedDataFile([FileName, '.analog_Headstage_AccelZ.dat']);
+    accel_z = readTrodesExtractedDataFile([FileName, '.analog_AccelZ.dat']);
     ag_z = accel_z.fields.data;
     g_z = decimate(double(ag_z),NdownSamp,'FIR');
     movement_data = [g_x'; g_y'; g_z'];
