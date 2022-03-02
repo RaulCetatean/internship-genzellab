@@ -2,6 +2,7 @@ import os
 import logging
 from rec_to_binaries import extract_trodes_rec_file
 import shutil 
+import re
 
 '''The script should be in /mnt/genzel/Rat/HM/Rat_HM_Ephys/'''
 
@@ -9,6 +10,7 @@ usr_input = input("Please insert the number of the rat: ")
 script_dir = os.getcwd()
 folders = []
 rats = os.listdir()
+paths = []
 
 for rat_n in rats:
     if f"Rat{usr_input}" in rat_n:
@@ -19,7 +21,25 @@ for root, dirs, files in os.walk(new_dir):
     for name in files:
         if '.rec' == name[len(name)-4:]:
             rec = os.path.join(root, name)
-            folders.append(rec)
+            control = rec.split('/')[-1]
+            control_dir = '/'.join(rec.split('/')[:-1])
+            if control_dir not in paths:
+                paths.append(control_dir)
+                folders.append(rec)
+            else:
+                add_path = f"{rec[:-4]}"
+                os.mkdir(add_path)
+                shutil.move(rec, add_path)
+                folders.append(f"{add_path}/{name}")
+                
+# From all the .rec files in the folder, I'm interested in only those with the date
+# in the folder name. Index 7 is the date folder in our case
+
+for f in folders:
+    folder = f.split('/')[7]
+    m = re.search(r'\d+$', folder)
+    if m is not None:
+        paths.append(f)
 
 
 # PRE-ANALYSIS PART
@@ -108,6 +128,12 @@ def cleanup(data_dir, animal, date, filename):
 # AUTOMATING IT FOR ALL REC FILES FOR A RAT
 
 for recording in folders:
-    filename, date, animal, data_dir = organization(recording)
-    conversion(data_dir, animal)
-    cleanup(data_dir, animal, date, filename)
+    control = recording.split('/')[-1]
+    control_dir = '/'.join(recording.split('/')[:-1])
+    if len(control.split('_')) >= 5:
+        ls = next(os.walk(control_dir))[1]
+        if f"{control[:-3]}analog" not in ls and f"{control[:-3]}LFP" not in ls:
+            #this thing should check if folders were already generated. If not, it will start to work on it
+            filename, date, animal, data_dir = organization(recording)
+            conversion(data_dir, animal)
+            cleanup(data_dir, animal, date, filename)
